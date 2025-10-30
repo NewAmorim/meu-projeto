@@ -1,4 +1,4 @@
-name: IQ Server Scan
+name: IQ Server Scan - Maven Project
 
 on:
   push:
@@ -11,18 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
+      # 1️⃣ Clonar o repositório
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Instalar Java (se necessário)
+      # 2️⃣ Configurar Java (necessário para Maven e IQ Server)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Rodar análise com IQ Server
+      # 3️⃣ Configurar Maven manualmente
+      - name: Setup Maven
+        run: |
+          echo "MAVEN_HOME=/opt/maven" >> $GITHUB_ENV
+          echo "/opt/maven/bin" >> $GITHUB_PATH
+
+      # 4️⃣ Rodar build do Maven
+      - name: Build Maven project
+        run: |
+          mvn clean package
+
+      # 5️⃣ Rodar scan do IQ Server enviando todos os arquivos
+      - name: Run IQ Server scan
         run: |
           curl -u "${{ secrets.IQ_USER }}:${{ secrets.IQ_PASSWORD }}" \
                -F "applicationId=${{ secrets.IQ_APPLICATION_ID }}" \
-               -F "scan=@target/*.jar" \
+               -F "scan=@." \
                "${{ secrets.IQ_SERVER_URL }}/api/v2/scan/applications/${{ secrets.IQ_APPLICATION_ID }}/sources"
