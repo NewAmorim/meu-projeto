@@ -25,8 +25,7 @@ jobs:
       # 3️⃣ Rodar scan do IQ Server enviando todos os arquivos do repositório
       - name: Run IQ Server scasn
         run: |
-          curl -H "Authorization: Bearer ${{ secrets.IQ_PASSWORD }}" \
-            -F "applicationId=${{ secrets.IQ_APPLICATION_ID }}" \
-            -F "scan=@." \
-            "${{ secrets.IQ_SERVER_URL }}/api/v2/scan/applications/${{ secrets.IQ_APPLICATION_ID }}/sources"
+          curl -u "${{ secrets.IQ_USER }}:${{ secrets.IQ_PASSWORD }}" \
+               https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/organizations
+
 
