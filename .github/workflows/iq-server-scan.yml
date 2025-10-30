@@ -15,16 +15,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Configurar Java (necessário para o IQ Server)
+      # 2️⃣ Configurar Java (requerido pelo IQ Server)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3️⃣ Rodar scan do IQ Server enviando todos os arquivos do repositório
-      - name: Run IQ Server sdcasn
+      # 3️⃣ Compactar o código-fonte do repositório
+      - name: Compactar repositório
+        run: zip -r source.zip .
+
+      # 4️⃣ Testar autenticação com o IQ Server (verificar se o token/user funciona)
+      - name: Testar conexão com IQ Server
+        env:
+          IQ_USER: ${{ secrets.IQ_USER }}
+          IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
         run: |
-          curl -u z5nf6bxw:9DFnDGvDzVMFCfUIlYFHjhW6UfHQBYelYtvhoaV8bARl https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/organizations
+          echo "🔹 Testando autenticação com o Sonatype IQ Server..."
+          curl -v -u "$IQ_USER:$IQ_PASSWORD" \
+               "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/organizations"
 
-
+      # 5️⃣ Enviar código para o IQ Server e rodar o SCA
+      - name: Executar SCA no IQ Server
+        env:
+          IQ_USER: ${{ secrets.IQ_USER }}
+          IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
+          IQ_APPLICATION_ID: ${{ secrets.IQ_APPLICATION_ID }}
+        run: |
+          echo "🚀 Enviando código-fonte para análise no IQ Server..."
+          curl -v -u "$IQ_USER:$IQ_PASSWORD" \
+               -F "applicationId=$IQ_APPLICATION_ID" \
+               -F "scan=@source.zip" \
+               "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/scan/applications/$IQ_APPLICATION_ID/sources"
