@@ -27,4 +27,5 @@ jobs:
         run: |
           curl -u "${{ secrets.IQ_USER }}:${{ secrets.IQ_PASSWORD }}" \
                -F "applicationId=${{ secrets.IQ_APPLICATION_ID }}" \
-               -F "sca
+               -F "scan=@." \
+               "${{ secrets.IQ_SERVER_URL }}/api/v2/scan/applications/${{ secrets.IQ_APPLICATION_ID }}/sources"
