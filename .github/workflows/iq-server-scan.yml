@@ -1,0 +1,28 @@
+name: IQ Server Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  iq_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Java (se necessário)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Rodar análise com IQ Server
+        run: |
+          curl -u "${{ secrets.IQ_USER }}:${{ secrets.IQ_PASSWORD }}" \
+               -F "applicationId=${{ secrets.IQ_APPLICATION_ID }}" \
+               -F "scan=@target/*.jar" \
+               "${{ secrets.IQ_SERVER_URL }}/api/v2/scan/applications/${{ secrets.IQ_APPLICATION_ID }}/sources"
