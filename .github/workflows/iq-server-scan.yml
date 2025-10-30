@@ -38,6 +38,6 @@ jobs:
         run: |
           echo "🚀 Enviando código-fonte para análise no IQ Server..."
           curl -v -u "VJA9wEh4:ycKAOghFvmpQdzNLvoIwj3xRvsp08zQtMUBrBJAiqjBK" \
-               -F "applicationId=z5nf6bxw" \
+               -F "applicationId=sigma-2024__santanaGs" \
                -F "scan=@source.zip" \
                "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/scan/applications/z5nf6bxw/sources"
