@@ -26,25 +26,18 @@ jobs:
       - name: Compactar repositório
         run: zip -r source.zip .
 
-      # 4️⃣ Testar autenticação com o IQ Server (verificar se o token/user funciona)
+      # 4️⃣ Testar autenticação com o IQ Server
       - name: Testar conexão com IQ Server
-        env:
-          IQ_USER: ${{ secrets.IQ_USER }}
-          IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
         run: |
           echo "🔹 Testando autenticação com o Sonatype IQ Server..."
-          curl -v -u "$IQ_USER:$IQ_PASSWORD" \
+          curl -v -u "VJA9wEh4:ycKAOghFvmpQdzNLvoIwj3xRvsp08zQtMUBrBJAiqjBK" \
                "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/organizations"
 
       # 5️⃣ Enviar código para o IQ Server e rodar o SCA
       - name: Executar SCA no IQ Server
-        env:
-          IQ_USER: ${{ secrets.IQ_USER }}
-          IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
-          IQ_APPLICATION_ID: ${{ secrets.IQ_APPLICATION_ID }}
         run: |
           echo "🚀 Enviando código-fonte para análise no IQ Server..."
-          curl -v -u "$IQ_USER:$IQ_PASSWORD" \
-               -F "applicationId=$IQ_APPLICATION_ID" \
+          curl -v -u "VJA9wEh4:ycKAOghFvmpQdzNLvoIwj3xRvsp08zQtMUBrBJAiqjBK" \
+               -F "applicationId=z5nf6bxw" \
                -F "scan=@source.zip" \
-               "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/scan/applications/$IQ_APPLICATION_ID/sources"
+               "https://hairlike-cami-fiercely.ngrok-free.dev/api/v2/scan/applications/z5nf6bxw/sources"
